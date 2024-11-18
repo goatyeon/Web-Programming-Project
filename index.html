@@ -1,80 +1,136 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Google Maps with Place Details</title>
-    <script>
-        const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
-
-    </script>
-    <script src='https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap' async defer></script>
-    <script>
-        function initMap() {
-            var map = new google.maps.Map(document.getElementById('map'), {
-                center: { lat: 34.6937, lng: 135.5023 }, // Example: Centered on Osaka
-                zoom: 12
-            });
-
-            var infowindow = new google.maps.InfoWindow();
-            var service = new google.maps.places.PlacesService(map);
-
-            map.addListener('click', function(e) {
-                var request = {
-                    location: e.latLng,
-                    radius: 50 // Adjust the radius to suit your needs
-                };
-
-                // Perform a nearby search to get place details
-                service.nearbySearch(request, function(results, status) {
-                    if (status === google.maps.places.PlacesServiceStatus.OK && results[0]) {
-                        var placeName = results[0].name; // Extract the name of the place
-                        console.log("Place details:", results[0]);
-
-                        infowindow.setContent(placeName);
-                        infowindow.setPosition(e.latLng);
-                        infowindow.open(map);
-
-                        // Clear the results div before displaying new results
-                        document.getElementById('results').innerHTML = '';
-
-                        // Define the keywords to append to the place name for searches
-                        const keywords = ['날씨', '여행', '맛집'];
-
-                        keywords.forEach(keyword => {
-                            const query = `${placeName} ${keyword}`;
-                            fetch(`/crawl?destination=${encodeURIComponent(query)}`)
-                                .then(response => response.json())
-                                .then(data => {
-                                    console.log(`Results for: ${query}`, data);
-                                    
-                                    // Check if data and data.results exist
-                                    if (data && Array.isArray(data.results)) {
-                                        let output = `<h2>Search Results for "${keyword}"</h2>`;
-                                        data.results.forEach(item => {
-                                            output += `<p><strong>${item.title}</strong><br><a href="${item.url}" target="_blank">${item.url}</a><br>${item.description}</p>`;
-                                        });
-                                        document.getElementById('results').innerHTML += output;
-                                    } else {
-                                        document.getElementById('results').innerHTML += `<p>No results found for "${keyword}".</p>`;
-                                        console.warn(`No results array in the response for ${query}`);
-                                    }
-                                })
-                                .catch(err => {
-                                    console.error(`Error fetching data for ${query}:`, err);
-                                });
-                        });
-                    } else {
-                        console.error("Place search was not successful:", status);
-                    }
-                });
-            });
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Quiz Game</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
         }
-    </script>
+        #quiz-container {
+            margin-top: 20px;
+        }
+        #score-container {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Select a Location on the Map</h1>
-    <div id="map" style="height: 500px; width: 100%;"></div>
-    <div id="results"></div>
+
+    <h1>AI Quiz Game</h1>
+    <p>Answer the questions and try to get a high score!</p>
+
+    <div id="quiz-container">
+        <!-- Quiz will appear here -->
+    </div>
+
+    <div id="score-container">
+        <p>Your Score: <span id="score">0</span></p>
+    </div>
+
+    <script>
+        // Quizzes for various difficulty levels
+        const easyQuestions = [
+            { question: "What is 2 + 2?", options: [4, 3, 5], answer: 4 },
+            { question: "What is 3 + 1?", options: [4, 6, 2], answer: 4 }
+        ];
+
+        const mediumQuestions = [
+            { question: "What is 15 * 3?", options: [45, 30, 60], answer: 45 },
+            { question: "What is 12 * 6?", options: [72, 56, 50], answer: 72 }
+        ];
+
+        const hardQuestions = [
+            { question: "What is 25 * 16?", options: [400, 375, 420], answer: 400 },
+            { question: "What is 100 * 15?", options: [1500, 1250, 1300], answer: 1500 }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let currentDifficulty = 'easy';
+
+        // TensorFlow.js model for predicting next difficulty based on score
+        let model;
+
+        // Load a simple model for adjusting difficulty based on performance
+        async function loadModel() {
+            // For demonstration, we'll create a simple dummy model that "predicts" difficulty
+            model = tf.sequential();
+            model.add(tf.layers.dense({units: 1, inputShape: [1], activation: 'relu'}));
+            model.add(tf.layers.dense({units: 1, activation: 'linear'}));
+            model.compile({optimizer: 'adam', loss: 'meanSquaredError'});
+
+            // Dummy training data (this is for illustration; you can use real data)
+            const xs = tf.tensor2d([0, 1, 2], [3, 1]);
+            const ys = tf.tensor2d([1, 2, 3], [3, 1]);
+            await model.fit(xs, ys, {epochs: 100});
+            console.log('Model loaded');
+        }
+
+        async function adjustDifficulty() {
+            const input = tf.tensor2d([score], [1, 1]);
+            const output = await model.predict(input).array();
+            const predictedDifficulty = output[0][0];
+
+            if (predictedDifficulty < 1) {
+                currentDifficulty = 'easy';
+            } else if (predictedDifficulty < 2) {
+                currentDifficulty = 'medium';
+            } else {
+                currentDifficulty = 'hard';
+            }
+
+            console.log(`Predicted Difficulty: ${currentDifficulty}`);
+        }
+
+        // Function to display the current question
+        function displayQuestion() {
+            const currentQuestion = getCurrentQuestion();
+            const quizContainer = document.getElementById("quiz-container");
+            quizContainer.innerHTML = `
+                <h2>${currentQuestion.question}</h2>
+                <ul>
+                    ${currentQuestion.options.map(option => `<li onclick="checkAnswer(${option})">${option}</li>`).join('')}
+                </ul>
+            `;
+        }
+
+        // Get the current question based on difficulty
+        function getCurrentQuestion() {
+            if (currentDifficulty === 'easy') {
+                return easyQuestions[currentQuestionIndex];
+            } else if (currentDifficulty === 'medium') {
+                return mediumQuestions[currentQuestionIndex];
+            } else {
+                return hardQuestions[currentQuestionIndex];
+            }
+        }
+
+        // Function to check the answer
+        function checkAnswer(selected) {
+            const correctAnswer = getCurrentQuestion().answer;
+            if (selected === correctAnswer) {
+                score++;
+                document.getElementById("score").textContent = score;
+            }
+            currentQuestionIndex++;
+            if (currentQuestionIndex >= getCurrentQuestion().length) {
+                currentQuestionIndex = 0;
+            }
+            adjustDifficulty();
+            displayQuestion();
+        }
+
+        // Load the model and start the quiz
+        async function startQuiz() {
+            await loadModel();
+            displayQuestion();
+        }
+
+        startQuiz();
+    </script>
+
 </body>
 </html>
-
-
