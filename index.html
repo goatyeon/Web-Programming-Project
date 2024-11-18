@@ -1,136 +1,55 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Quiz Game</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <title>게임 모음</title>
     <style>
         body {
             font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
         }
-        #quiz-container {
-            margin-top: 20px;
+        .game-card {
+            display: inline-block;
+            width: 200px;
+            height: 200px;
+            margin: 20px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
         }
-        #score-container {
-            margin-top: 20px;
+        .game-card:hover {
+            transform: scale(1.1);
+        }
+        .game-card img {
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+        }
+        .game-title {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-
-    <h1>AI Quiz Game</h1>
-    <p>Answer the questions and try to get a high score!</p>
-
-    <div id="quiz-container">
-        <!-- Quiz will appear here -->
+    <h1>게임 모음</h1>
+    <div class="game-container">
+        <div class="game-card" onclick="location.href='baseball_game/baseball_game.html'">
+            <img src="https://via.placeholder.com/200x200.png?text=숫자+야구" alt="숫자 야구">
+            <div class="game-title">숫자 야구</div>
+        </div>
+        <div class="game-card" onclick="location.href='puzzel_game/puzzle_game.html'">
+            <img src="https://via.placeholder.com/200x200.png?text=퍼즐+게임" alt="퍼즐 게임">
+            <div class="game-title">퍼즐 맞추기</div>
+        </div>
     </div>
-
-    <div id="score-container">
-        <p>Your Score: <span id="score">0</span></p>
-    </div>
-
-    <script>
-        // Quizzes for various difficulty levels
-        const easyQuestions = [
-            { question: "What is 2 + 2?", options: [4, 3, 5], answer: 4 },
-            { question: "What is 3 + 1?", options: [4, 6, 2], answer: 4 }
-        ];
-
-        const mediumQuestions = [
-            { question: "What is 15 * 3?", options: [45, 30, 60], answer: 45 },
-            { question: "What is 12 * 6?", options: [72, 56, 50], answer: 72 }
-        ];
-
-        const hardQuestions = [
-            { question: "What is 25 * 16?", options: [400, 375, 420], answer: 400 },
-            { question: "What is 100 * 15?", options: [1500, 1250, 1300], answer: 1500 }
-        ];
-
-        let currentQuestionIndex = 0;
-        let score = 0;
-        let currentDifficulty = 'easy';
-
-        // TensorFlow.js model for predicting next difficulty based on score
-        let model;
-
-        // Load a simple model for adjusting difficulty based on performance
-        async function loadModel() {
-            // For demonstration, we'll create a simple dummy model that "predicts" difficulty
-            model = tf.sequential();
-            model.add(tf.layers.dense({units: 1, inputShape: [1], activation: 'relu'}));
-            model.add(tf.layers.dense({units: 1, activation: 'linear'}));
-            model.compile({optimizer: 'adam', loss: 'meanSquaredError'});
-
-            // Dummy training data (this is for illustration; you can use real data)
-            const xs = tf.tensor2d([0, 1, 2], [3, 1]);
-            const ys = tf.tensor2d([1, 2, 3], [3, 1]);
-            await model.fit(xs, ys, {epochs: 100});
-            console.log('Model loaded');
-        }
-
-        async function adjustDifficulty() {
-            const input = tf.tensor2d([score], [1, 1]);
-            const output = await model.predict(input).array();
-            const predictedDifficulty = output[0][0];
-
-            if (predictedDifficulty < 1) {
-                currentDifficulty = 'easy';
-            } else if (predictedDifficulty < 2) {
-                currentDifficulty = 'medium';
-            } else {
-                currentDifficulty = 'hard';
-            }
-
-            console.log(`Predicted Difficulty: ${currentDifficulty}`);
-        }
-
-        // Function to display the current question
-        function displayQuestion() {
-            const currentQuestion = getCurrentQuestion();
-            const quizContainer = document.getElementById("quiz-container");
-            quizContainer.innerHTML = `
-                <h2>${currentQuestion.question}</h2>
-                <ul>
-                    ${currentQuestion.options.map(option => `<li onclick="checkAnswer(${option})">${option}</li>`).join('')}
-                </ul>
-            `;
-        }
-
-        // Get the current question based on difficulty
-        function getCurrentQuestion() {
-            if (currentDifficulty === 'easy') {
-                return easyQuestions[currentQuestionIndex];
-            } else if (currentDifficulty === 'medium') {
-                return mediumQuestions[currentQuestionIndex];
-            } else {
-                return hardQuestions[currentQuestionIndex];
-            }
-        }
-
-        // Function to check the answer
-        function checkAnswer(selected) {
-            const correctAnswer = getCurrentQuestion().answer;
-            if (selected === correctAnswer) {
-                score++;
-                document.getElementById("score").textContent = score;
-            }
-            currentQuestionIndex++;
-            if (currentQuestionIndex >= getCurrentQuestion().length) {
-                currentQuestionIndex = 0;
-            }
-            adjustDifficulty();
-            displayQuestion();
-        }
-
-        // Load the model and start the quiz
-        async function startQuiz() {
-            await loadModel();
-            displayQuestion();
-        }
-
-        startQuiz();
-    </script>
-
 </body>
 </html>
