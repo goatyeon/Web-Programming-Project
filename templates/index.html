@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google Maps with Place Details</title>
+    <script>
+        const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+
+    </script>
+    <script src='https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap' async defer></script>
+    <script>
+        function initMap() {
+            var map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 34.6937, lng: 135.5023 }, // Example: Centered on Osaka
+                zoom: 12
+            });
+
+            var infowindow = new google.maps.InfoWindow();
+            var service = new google.maps.places.PlacesService(map);
+
+            map.addListener('click', function(e) {
+                var request = {
+                    location: e.latLng,
+                    radius: 50 // Adjust the radius to suit your needs
+                };
+
+                // Perform a nearby search to get place details
+                service.nearbySearch(request, function(results, status) {
+                    if (status === google.maps.places.PlacesServiceStatus.OK && results[0]) {
+                        var placeName = results[0].name; // Extract the name of the place
+                        console.log("Place details:", results[0]);
+
+                        infowindow.setContent(placeName);
+                        infowindow.setPosition(e.latLng);
+                        infowindow.open(map);
+
+                        // Clear the results div before displaying new results
+                        document.getElementById('results').innerHTML = '';
+
+                        // Define the keywords to append to the place name for searches
+                        const keywords = ['날씨', '여행', '맛집'];
+
+                        keywords.forEach(keyword => {
+                            const query = `${placeName} ${keyword}`;
+                            fetch(`/crawl?destination=${encodeURIComponent(query)}`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    console.log(`Results for: ${query}`, data);
+                                    
+                                    // Check if data and data.results exist
+                                    if (data && Array.isArray(data.results)) {
+                                        let output = `<h2>Search Results for "${keyword}"</h2>`;
+                                        data.results.forEach(item => {
+                                            output += `<p><strong>${item.title}</strong><br><a href="${item.url}" target="_blank">${item.url}</a><br>${item.description}</p>`;
+                                        });
+                                        document.getElementById('results').innerHTML += output;
+                                    } else {
+                                        document.getElementById('results').innerHTML += `<p>No results found for "${keyword}".</p>`;
+                                        console.warn(`No results array in the response for ${query}`);
+                                    }
+                                })
+                                .catch(err => {
+                                    console.error(`Error fetching data for ${query}:`, err);
+                                });
+                        });
+                    } else {
+                        console.error("Place search was not successful:", status);
+                    }
+                });
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Select a Location on the Map</h1>
+    <div id="map" style="height: 500px; width: 100%;"></div>
+    <div id="results"></div>
+</body>
+</html>
+
+
