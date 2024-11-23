@@ -63,7 +63,7 @@ function showPlaceInfo(place) {
 
 async function fetchBlogLinks(query) {
     try {
-        const response = await fetch(`http://localhost:5500/fetchBlogLinks?query=${encodeURIComponent(query)}`);
+        const response = await fetch(`https://web-programming-project-dw0r.onrender.com/fetchBlogLinks?query=${encodeURIComponent(query)}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
