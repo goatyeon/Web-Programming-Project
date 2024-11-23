@@ -1,0 +1,142 @@
+/* 기본 스타일 */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* 헤더 */
+header {
+    background-color: #819FF7;
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+    border-bottom: 4px solid white; /* 하단 경계선 */
+    
+}
+
+/* 네비게이션 */
+nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    background-color: #848484;
+    padding: 10px 0;
+    margin: 0;
+}
+
+nav ul li {
+    margin: 0 10px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+}
+
+/* 메인 섹션 */
+main {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 20px;
+}
+
+
+/* index.html */
+/* section을 담은 body 부분 */
+/* 화면을 가로로 나누기 위해 flexbox 사용 */
+.container {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px;
+  width: 100%;  /* 페이지 전체 너비 */
+  box-sizing: border-box;
+  align-items: stretch;  /* 두 섹션의 높이를 같게 */
+}
+
+#section1, #section2 {
+  height: 400px;  /* 두 섹션 높이를 동일하게 설정 */
+}
+
+#section1 {
+  width: 50%;
+  margin-right: 20px;
+}
+
+#section2 {
+  width: 50%;
+  background-color: #D5E0E8; /* 색깔박스 */
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+
+
+#map-container {
+    width: 50%;
+    padding: 10px;
+}
+
+#map {
+    height: 400px;
+    border: 2px solid #D5E0E8;
+    margin: 10px;
+}
+
+#info-container {
+    width: 50%;
+    padding: 10px;
+}
+
+#info-box {
+    background-color: #e9c46a;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+#search-input {
+    width: calc(100% - 80px);
+    padding: 8px;
+}
+
+#search-button {
+    padding: 8px;
+    background-color: #264653;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+#loading-spinner {
+    text-align: center;
+    margin: 10px 0;
+}
+
+.hidden {
+    display: none;
+}
+
+#result-links {
+    margin-top: 15px;
+}
+
+#result-links a {
+    display: block;
+    color: #264653;
+    text-decoration: none;
+    margin: 5px 0;
+}
+
+#result-links a:hover {
+    text-decoration: underline;
+}
+
+/* 푸터 */
+footer {
+    background-color: #264653;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+}
