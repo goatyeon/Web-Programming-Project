@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>여행 정보 모아보기</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_add.css') }}">
+    <script defer src="{{ url_for('static', filename='js/scripts_res.js') }}" defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=my_key&libraries=places&callback=initMap" async defer></script>
+</head>
+<body>
+    <header>
+        <h1>여행 정보 모아보기</h1>
+    </header>
+    <nav>
+        <ul>
+            <li><a href="#" id="category-cafe">카페</a></li>
+            <li><a href="#" id="category-restaurant">식당</a></li>
+            <li><a href="#" id="category-tourist">관광지</a></li>
+        </ul>
+    </nav>
+    <main>
+        <section id="map-container">
+            <div id="map"></div>
+        </section>
+        <section id="info-container">
+            <div id="info-box">
+                <input type="text" id="search-input" placeholder="검색할 지역을 입력하세요">
+                <button id="search-button">검색</button>
+                <div id="loading-spinner" class="hidden">로딩 중...</div>
+                <div id="result-links"></div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>서울과학기술대학교 인공지능응용학과</p>
+        <p>Email: <a href="mailto:uaua1595@seoultech.ac.kr">uaua1595@seoultech.ac.kr</a></p>
+    </footer>
+</body>
+</html>
