@@ -69,7 +69,7 @@ def fetch_blog_links():
         return jsonify({"error": "Query parameter is required"}), 400
 
     # 네이버 API에서 블로그 검색
-    result = getNaverSearch('blog', query, 1, 10)
+    result = getNaverSearch('blog', query, 1, 25)
     print(result)  # 응답 내용 로그로 출력
 
     if result is None:

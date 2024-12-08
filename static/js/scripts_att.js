@@ -58,12 +58,70 @@ function clearMarkers() {
 
 // 장소 정보 표시
 function showPlaceInfo(place) {
-    alert(`장소 이름: ${place.name}\n평점: ${place.rating}\n주소: ${place.formatted_address}`);
+    // 기존에 존재하는 정보 박스가 있으면 제거
+    const existingInfoBox = document.querySelector('.place-info-box');
+    if (existingInfoBox) {
+        existingInfoBox.remove();
+    }
+
+    // 새로운 div 생성
+    const newInfoBox = document.createElement('div');
+    newInfoBox.classList.add('place-info-box'); // 스타일 적용을 위한 클래스 추가
+
+    // 리뷰를 최대 5개로 제한하고, 없으면 "없음" 표시
+    const reviews = place.reviews ? place.reviews.slice(0, 5).map(review => `
+        <p><strong>${review.author_name}:</strong> ${review.text}</p>
+    `).join('') : "<p>리뷰가 없습니다.</p>";
+
+    // 영업 여부 처리
+    const isOpen = place.opening_hours ? (place.opening_hours.open_now ? "영업 중" : "영업 종료") : "정보 없음";
+
+    // 내용 설정
+    newInfoBox.innerHTML = `
+        <h3>장소 정보</h3>
+        <p><strong>이름:</strong> ${place.name}</p>
+        <p><strong>평점:</strong> ${place.rating || "없음"}</p>
+        <p><strong>주소:</strong> ${place.formatted_address || "없음"}</p>
+        <p><strong>전화번호:</strong> ${place.formatted_phone_number || "없음"}</p>
+        <p><strong>웹사이트:</strong> <a href="${place.website || "#"}" target="_blank">${place.website ? place.website : "없음"}</a></p>
+        <p><strong>영업 여부:</strong> ${isOpen}</p>
+        <div><strong>리뷰:</strong>${reviews}</div>
+    `;
+
+    // 초기 투명도 설정
+    newInfoBox.style.opacity = 0;
+    newInfoBox.style.transition = "opacity 0.5s";
+
+    // info-box라는 id를 가진 div에 새로운 infoBox 추가
+    const infoBoxContainer = document.getElementById('map-container');
+    if (infoBoxContainer) {
+        infoBoxContainer.appendChild(newInfoBox);
+    } else {
+        console.log("info-box 요소가 없습니다.");
+    }
+
+    // 투명도 변경
+    setTimeout(() => {
+        newInfoBox.style.opacity = 1; // 점차 보이게 설정
+    }, 10);
+
+    // 위치 지정 (필요에 따라 수정)
+    Object.assign(newInfoBox.style, {
+        padding: "15px",
+        backgroundColor: "#f9f9f9",
+        border: "1px solid #ddd",
+        borderRadius: "5px",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+        marginBottom: "15px", // 여러 정보 박스가 있을 경우 아래쪽 간격
+    });
 }
+
+
+
 
 async function fetchBlogLinks(query) {
     try {
-        const response = await fetch(`https://web-programming-project-dw0r.onrender.com/fetchBlogLinks?query=${encodeURIComponent(query)}`);
+        const response = await fetch(`http://localhost:5500/fetchBlogLinks?query=${encodeURIComponent(query)}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -73,10 +131,14 @@ async function fetchBlogLinks(query) {
         resultLinks.innerHTML = "";  // 기존 결과 초기화
 
         data.forEach((item) => {
+            // <b> 태그 제거: 제목에서 <b> 태그를 제거
+            const cleanTitle = item.title.replace(/<b>/g, '').replace(/<\/b>/g, ''); 
+
+            // <a> 태그 생성
             const link = document.createElement("a");
             link.href = item.link;
             link.target = "_blank";
-            link.textContent = item.title;
+            link.textContent = cleanTitle;  // <b> 태그가 제거된 제목 사용
             resultLinks.appendChild(link);
         });
     } catch (error) {
@@ -84,12 +146,22 @@ async function fetchBlogLinks(query) {
     }
 }
 
+
 // 이벤트 리스너
 
 document.getElementById("search-button").addEventListener("click", () => {
     const location = document.getElementById("search-input").value;
     searchPlaces("관광지", location);
     fetchBlogLinks(location + " 관광지");
+});
+
+// 엔터키로 검색 이벤트
+document.getElementById("search-input").addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {  // 엔터키가 눌렸을 때
+        const location = document.getElementById("search-input").value;
+        searchPlaces("관광지", location);
+        fetchBlogLinks(location + " 관광지");
+    }
 });
 
 window.onload = initMap;

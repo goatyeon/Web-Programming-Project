@@ -6,137 +6,66 @@ body {
     box-sizing: border-box;
 }
 
-/* 헤더 */
+/* 헤더 스타일 */
 header {
-    background-color: #819FF7;
+    background-color: #F9F9F9;
     color: white;
     text-align: center;
-    padding: 15px 0;
+    padding: 20px 0;
     border-bottom: 4px solid white; /* 하단 경계선 */
-    
 }
 
-/* 네비게이션 */
-nav ul {
-    list-style: none;
-    display: flex;
-    justify-content: center;
-    background-color: #848484;
-    padding: 10px 0;
-    margin: 0;
+
+/* 아이콘 스타일 */
+.header-icon {
+    position: absolute;
+    top: 3px;           /* 헤더의 상단에서 위치 설정 */
+    left: 50px;          /* 왼쪽에 배치 */
+    font-size: 75px;     /* 아이콘 크기 설정 */
+    color: #084B8A;        /* 아이콘 색상 */
 }
 
-nav ul li {
-    margin: 0 10px;
+/* 헤더 안의 박스 스타일 */
+.header-box {
+    display: inline-block;       /* 박스를 내용에 맞게 줄이기 */
+    padding: 10px 20px;          /* 내부 여백 */
+    background-color: #4A84D4;   /* 박스 배경색 */
+    border-radius: 10px;         /* 둥근 모서리 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 약간의 그림자 */
 }
 
-nav ul li a {
-    color: white;
-    text-decoration: none;
-    font-size: 16px;
+/* 제목 스타일 (필요하면 추가) */
+.header-box h1 {
+    margin: 0;                   /* 여백 제거 */
+    font-size: 24px;             /* 텍스트 크기 조정 */
+    line-height: 1.2;            /* 줄 간격 조정 */
 }
 
-/* 메인 섹션 */
+
 main {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 20px;
+    position: relative;
+    /* background-image: url('static/source/plane.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat; */
+    height: 100vh;
+    margin: 0;
+    padding: 0;
 }
 
+/* 이미지 삽입은 보류 */
 
-/* index.html */
-/* section을 담은 body 부분 */
-/* 화면을 가로로 나누기 위해 flexbox 사용 */
-.container {
-  display: flex;
-  justify-content: space-between;
-  margin: 20px;
-  width: 100%;  /* 페이지 전체 너비 */
-  box-sizing: border-box;
-  align-items: stretch;  /* 두 섹션의 높이를 같게 */
-}
-
-#section1, #section2 {
-  height: 400px;  /* 두 섹션 높이를 동일하게 설정 */
-}
-
-#section1 {
-  width: 50%;
-  margin-right: 20px;
-}
-
-#section2 {
-  width: 50%;
-  background-color: #D5E0E8; /* 색깔박스 */
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-
-
-#map-container {
-    width: 50%;
-    padding: 10px;
-}
-
-#map {
-    height: 400px;
-    border: 2px solid #D5E0E8;
-    margin: 10px;
-}
-
-#info-container {
-    width: 50%;
-    padding: 10px;
-}
-
-#info-box {
-    background-color: #e9c46a;
-    padding: 20px;
-    border-radius: 5px;
-}
-
-#search-input {
-    width: calc(100% - 80px);
-    padding: 8px;
-}
-
-#search-button {
-    padding: 8px;
-    background-color: #264653;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-#loading-spinner {
-    text-align: center;
-    margin: 10px 0;
-}
-
-.hidden {
-    display: none;
-}
-
-#result-links {
-    margin-top: 15px;
-}
-
-#result-links a {
-    display: block;
-    color: #264653;
-    text-decoration: none;
-    margin: 5px 0;
-}
-
-#result-links a:hover {
-    text-decoration: underline;
-}
 
 /* 푸터 */
 footer {
-    background-color: #264653;
+    background-color: #045FB4;
     color: white;
     text-align: center;
     padding: 10px 0;
 }
+
+footer a {
+    color: white;
+    /* text-decoration: none; */
+}
+

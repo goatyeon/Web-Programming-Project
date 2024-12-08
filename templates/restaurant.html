@@ -6,23 +6,114 @@
     <title>여행 정보 모아보기</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_add.css') }}">
     <script defer src="{{ url_for('static', filename='js/scripts_res.js') }}" defer></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=my_key&libraries=places&callback=initMap" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCWNjUn5UBvox0O4DsmnKqQ-SCqU2jU81g&libraries=places&callback=initMap" async defer></script>
+
+    <!-- Font Awesome CDN -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+
+    <style>
+        /* h1 태그에 마우스를 올렸을 때 커서 변경 */
+        .header-box {
+            cursor: pointer;
+        }
+
+        /* 기본 스타일 */
+        body, html {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            width: 100%;
+            height: 100%;
+        }
+
+        .link-container {
+            position: relative;          /* 위치 설정 가능 */
+            display: flex;               /* 가로로 나란히 배치 */
+            justify-content: flex-end;   /* 오른쪽 정렬 */
+            align-items: flex-end;       /* 캐릭터와 말풍선 하단 맞춤 */
+            margin: 20px;                /* header 아래 여백 */
+            overflow: visible;
+        }
+
+        /* 말풍선 스타일 */
+        .background {
+            position: relative;
+            background: #f0f0f0;         /* 말풍선 배경색 */
+            color: #333;                 /* 텍스트 색상 */
+            padding: 15px 20px;          /* 텍스트 여백 */
+            border-radius: 10px;         /* 둥근 모양 */
+            max-width: 450px;            /* 말풍선 최대 너비 */
+            margin-right: 20px;          /* 캐릭터와 간격 */
+            text-align: center;          /* 텍스트 가운데 정렬 */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 말풍선 꼬리 */
+        .background::after {
+            content: '';
+            position: absolute;
+            right: -20px;               /* 꼬리가 말풍선 오른쪽에 위치 */
+            top: 60%;                   /* 말풍선 세로 중심 */
+            transform: translateY(-50%); /* 세로 중앙 정렬 */
+            width: 0;
+            height: 0;
+            border: 10px solid transparent; /* 투명한 삼각형 */
+            border-left-color: #f0f0f0;     /* 왼쪽을 향하는 꼬리의 색상 (말풍선 배경색) */
+        }
+
+
+        /* 캐릭터 스타일 */
+        .character {
+            width: 150px;                 /* 캐릭터 크기 */
+            height: auto;                /* 비율 유지 */
+            margin-right: 80px;
+        }
+    </style>
+
+    
 </head>
 <body>
     <header>
-        <h1>여행 정보 모아보기</h1>
+        <div class="header-icon">
+            <i class="fas fa-plane"></i> <!-- 예시 아이콘 -->
+        </div>
+
+        <div class="header-box">
+            <h1>여행 정보 모아보기</h1>
+        </div>
+        <script>
+            // JavaScript to handle click event
+            document.querySelector('.header-box').addEventListener('click', function () {
+                // Redirect to the index route using Flask's url_for
+                window.location.href = "{{ url_for('index') }}";
+            });
+        </script>
     </header>
-    <nav>
-        <ul>
-            <li><a href="#" id="category-cafe">카페</a></li>
-            <li><a href="#" id="category-restaurant">식당</a></li>
-            <li><a href="#" id="category-tourist">관광지</a></li>
-        </ul>
-    </nav>
+
+    <div id="category-name">
+        <h3>음식점</h3>
+    </div>
+    <style>
+        #category-name {
+            text-align: center;               /* 텍스트를 수평 중앙 정렬 */
+            background-color: #ff81a3da;        /* 배경 색상 설정 */
+            /*padding: 2px;*/                    /* 여백을 추가하여 텍스트와 경계 사이의 공간을 확보 */
+            border-radius: 10px;              /* 모서리를 둥글게 설정 */
+            width: 150px;                     /* div 너비 설정 */
+            margin-left: 90px;
+            margin-top: 35px;
+            border: 2px solid #000000;
+        }
+    </style>
+    
+
     <main>
         <section id="map-container">
             <div id="map"></div>
         </section>
+
+
         <section id="info-container">
             <div id="info-box">
                 <input type="text" id="search-input" placeholder="검색할 지역을 입력하세요">
@@ -32,6 +123,45 @@
             </div>
         </section>
     </main>
+
+    <div class="link-container">
+        <div class="background">
+            <h3>다른 카테고리도 검색해보세요!</h3>
+            <p>
+                <span id="go-to-cafe" class="clickable-text">🍰카페</span>
+                <span id="go-to-attraction" class="clickable-text">🏛️관광지</span>
+            </p>            
+        </div>
+        <img src="{{ url_for('static', filename='source/tech.jpg') }}" alt="캐릭터 이미지" class="character">
+    </div>
+    
+    <style>
+        .clickable-text {
+            text-align: center;
+            cursor: pointer;             /* 클릭 가능한 커서 표시 */
+            color: black;                 /* 텍스트 색상 */
+            text-decoration: underline;  /* 밑줄 추가 */
+            font-size: 17px; 
+            margin-right: 20px; /* 오른쪽 공백 추가 */
+        }
+
+        .clickable-text:hover {
+            color: blue;             /* 호버 시 색상 변경 */
+        }
+
+    </style>    
+
+    <script>
+        document.getElementById('go-to-cafe').addEventListener('click', function () {
+            location.href = "{{ url_for('cafe') }}";
+        });
+
+        document.getElementById('go-to-attraction').addEventListener('click', function () {
+            location.href = "{{ url_for('attraction') }}";
+        });
+    </script>
+
+
     <footer>
         <p>서울과학기술대학교 인공지능응용학과</p>
         <p>Email: <a href="mailto:uaua1595@seoultech.ac.kr">uaua1595@seoultech.ac.kr</a></p>
