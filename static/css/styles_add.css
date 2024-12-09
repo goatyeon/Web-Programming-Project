@@ -8,24 +8,29 @@ body {
 
 /* 헤더 스타일 */
 header {
+    height: 100px;
     background-color: #F9F9F9;
     color: white;
     text-align: center;
     padding: 20px 0;
     border-bottom: 4px solid white; /* 하단 경계선 */
+
+    display: flex;              /* Flexbox 활성화 */
+    justify-content: center;    /* 가로 중앙 정렬 */
+    align-items: center;        /* 세로 중앙 정렬 */
 }
 
 
 /* 아이콘 스타일 */
 .header-icon {
     position: absolute;
-    top: 3px;           /* 헤더의 상단에서 위치 설정 */
+    top: 18px;           /* 헤더의 상단에서 위치 설정 */
     left: 50px;          /* 왼쪽에 배치 */
-    font-size: 75px;     /* 아이콘 크기 설정 */
+    font-size: 100px;     /* 아이콘 크기 설정 */
     color: #084B8A;        /* 아이콘 색상 */
 }
 
-/* 헤더 안의 박스 스타일 */
+/* 여행 정보 모아보기 */
 .header-box {
     display: inline-block;       /* 박스를 내용에 맞게 줄이기 */
     padding: 10px 20px;          /* 내부 여백 */
@@ -37,7 +42,7 @@ header {
 /* 제목 스타일 (필요하면 추가) */
 .header-box h1 {
     margin: 0;                   /* 여백 제거 */
-    font-size: 24px;             /* 텍스트 크기 조정 */
+    font-size: 45px;             /* 텍스트 크기 조정 */
     line-height: 1.2;            /* 줄 간격 조정 */
 }
 
@@ -104,6 +109,8 @@ main {
     padding: 20px;
     border-radius: 5px;
     border: 2px solid #4A84D4;
+    width: 100%; /* info-box가 부모의 크기를 따르도록 설정 */
+    box-sizing: border-box; /* padding을 포함한 너비 계산 */
 }
 
 #search-input {
@@ -128,13 +135,20 @@ main {
     display: none;
 }
 
+
 #result-links {
     margin-top: 15px;
 
-    max-height: 400px; /* 최대 높이를 설정 */
-    overflow-y: auto;  /* 내용이 넘칠 때 세로 스크롤 추가 */
-    padding-right: 10px; /* 오른쪽에 약간의 여백 추가 (스크롤을 위한 공간) */
+    height: auto; /* 자동 높이로 설정하여 카드들이 넘칠 수 있도록 함 */
+    max-height: 600px; /* 필요에 따라 높이 제한을 설정 (예시로 600px) */
+    overflow-y: auto; /* 세로 스크롤이 필요하면 추가 */
+    padding-right: 10px; /* 스크롤을 위한 여백 */
+    display: flex;
+    flex-wrap: wrap; /* 여러 카드가 줄을 바꿔서 배치될 수 있도록 */
+    justify-content: flex-start; /* 카드들이 왼쪽 정렬되도록 */
+    gap: 15px; /* 카드 간의 간격 */
 }
+
 
 #result-links a {
     display: block;
@@ -142,9 +156,21 @@ main {
     margin: 5px 0;
 }
 
-
 #result-links a:hover {
     text-decoration: underline;
 }
 
 
+
+#filter-container {
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+#filter-container select,
+#filter-container button {
+    margin-top: 10px;
+    padding: 8px;
+}

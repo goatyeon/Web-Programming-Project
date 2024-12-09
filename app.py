@@ -4,6 +4,8 @@ import json
 from dotenv import load_dotenv
 import os
 from flask_cors import CORS
+from datetime import datetime
+import traceback
 
 # 환경 변수 로드
 load_dotenv()
@@ -63,23 +65,49 @@ def getNaverSearch(node, query, start, display):
         return None
 
 @app.route('/fetchBlogLinks', methods=['GET'])
+
 def fetch_blog_links():
     query = request.args.get('query')
     if not query:
         return jsonify({"error": "Query parameter is required"}), 400
 
-    # 네이버 API에서 블로그 검색
-    result = getNaverSearch('blog', query, 1, 25)
-    print(result)  # 응답 내용 로그로 출력
+    try:
+        # 네이버 API에서 블로그 검색
+        result = getNaverSearch('blog', query, 1, 25)
+        print(result)  # 응답 내용 로그로 출력
 
-    if result is None:
-        return jsonify({"error": "Failed to fetch data from Naver"}), 500
+        if result is None:
+            return jsonify({"error": "Failed to fetch data from Naver"}), 500
 
-    # 'items' 키 존재 여부 확인
-    if 'items' in result:
-        return jsonify(result['items'])
-    else:
-        return jsonify({"error": "No items found in Naver response"}), 500
+        # 'items' 키 존재 여부 확인
+        if 'items' in result:
+            items = result['items']
+
+            print("First item description:", items[0]['description'])
+
+            # 작성일(postdate) 기준으로 내림차순 정렬
+            try:
+                # 'postdate'가 'YYYYMMDD' 형식일 경우 이를 datetime으로 변환
+                items.sort(key=lambda x: datetime.strptime(x['postdate'], '%Y%m%d'), reverse=True)
+
+                
+
+
+            except KeyError:
+                return jsonify({"error": "Some items are missing postdate"}), 500
+            except ValueError as e:
+                print(f"Date format error: {e}")
+                return jsonify({"error": "Invalid date format in some items"}), 500
+
+            return jsonify(items)
+        else:
+            return jsonify({"error": "No items found in Naver response"}), 500
+    except Exception as e:
+        print(f"Error in fetch_blog_links: {e}")
+        print(traceback.format_exc())  # 예외의 자세한 스택 추적 정보 출력
+        return jsonify({"error": "Internal server error"}), 500
+
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5500)

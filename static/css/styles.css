@@ -8,24 +8,29 @@ body {
 
 /* 헤더 스타일 */
 header {
+    height: 100px;
     background-color: #F9F9F9;
     color: white;
     text-align: center;
     padding: 20px 0;
     border-bottom: 4px solid white; /* 하단 경계선 */
+
+    display: flex;              /* Flexbox 활성화 */
+    justify-content: center;    /* 가로 중앙 정렬 */
+    align-items: center;        /* 세로 중앙 정렬 */
 }
 
 
 /* 아이콘 스타일 */
 .header-icon {
     position: absolute;
-    top: 3px;           /* 헤더의 상단에서 위치 설정 */
+    top: 18px;           /* 헤더의 상단에서 위치 설정 */
     left: 50px;          /* 왼쪽에 배치 */
-    font-size: 75px;     /* 아이콘 크기 설정 */
+    font-size: 100px;     /* 아이콘 크기 설정 */
     color: #084B8A;        /* 아이콘 색상 */
 }
 
-/* 헤더 안의 박스 스타일 */
+/* 여행 정보 모아보기 */
 .header-box {
     display: inline-block;       /* 박스를 내용에 맞게 줄이기 */
     padding: 10px 20px;          /* 내부 여백 */
@@ -37,7 +42,7 @@ header {
 /* 제목 스타일 (필요하면 추가) */
 .header-box h1 {
     margin: 0;                   /* 여백 제거 */
-    font-size: 24px;             /* 텍스트 크기 조정 */
+    font-size: 45px;             /* 텍스트 크기 조정 */
     line-height: 1.2;            /* 줄 간격 조정 */
 }
 
